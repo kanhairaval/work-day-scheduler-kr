@@ -1,8 +1,12 @@
 body {
   font-family: 'Open Sans', sans-serif;
   font-size: 16px;
-  background-color: wheat;
+  background-image: linear-gradient(to right, #4B4453, #B0A8B9);
   color: black;
+  margin: 0;
+  background-repeat: no-repeat;
+  height: 100%;
+  background-attachment: fixed;
 }
 
 textarea {
@@ -84,7 +88,7 @@ textarea {
 .container-fluid {
   border-width: 10px;
   border-style: solid;
-  border-image: linear-gradient(#FF6F91, #F9F871) 30;
+  border-image: linear-gradient(#B0A8B9, #4B4453) 30;
   margin: 0%;
   padding: 0%;
 }
