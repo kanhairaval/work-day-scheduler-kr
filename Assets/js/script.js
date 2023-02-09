@@ -4,137 +4,61 @@
 let dateEl = $("#date-of-today");
 let dateText = moment().format("dddd, MMMM Do");
 dateEl.text(dateText);
-let todoText = $("textarea");
-let hour9 = $("#hour-9");
-let hour10 = $("#hour-10");
-let hour11 = $("#hour-11");
-let hour12 = $("#hour-12");
-let hour13 = $("#hour-13");
-let hour14 = $("#hour-14");
-let hour15 = $("#hour-15");
-let hour16 = $("#hour-16");
-let hour17 = $("#hour-17");
-let saveButton = $("saveBtn");
-let messageText = $("#success-error");
+let todoText = $("<textarea>");
+let saveButton = $(".saveBtn")
+let successMessageText = $("#success");
+let errorMessageText = $("#error");
 let currentHour = moment().format("H");
-let hourBlocks = ["9", "10", "11", "12", "13", "14", "15", "16", "17",];
+let hourBlocks = ["9", "10", "11", "12", "13", "14", "15", "16", "17"];
+let objArray = [];
 
-// for (i = 0; i < hourBlocks.length; i++) {
-//   if (currentHour === hourBlocks[i]) {
-//     hour17.addClass("present");
-//   } else if (currentHour > hourBlocks) {
-
-//   }
-// }
-
-if (currentHour > hourBlocks[0]) {
-  hour9.addClass("past");
-} else if (currentHour === hourBlocks[0]) {
-  hour9.addClass("present");
-} else {
-  hour9.addClass("future");
-}
-
-if (currentHour > hourBlocks[1]) {
-  hour10.addClass("past");
-} else if (currentHour === hourBlocks[1]) {
-  hour10.addClass("present");
-} else {
-  hour10.addClass("future");
-}
-
-if (currentHour > hourBlocks[2]) {
-  hour11.addClass("past");
-} else if (currentHour === hourBlocks[2]) {
-  hour11.addClass("present");
-} else {
-  hour11.addClass("future");
-}
-
-if (currentHour > hourBlocks[3]) {
-  hour12.addClass("past");
-} else if (currentHour === hourBlocks[3]) {
-  hour12.addClass("present");
-} else {
-  hour12.addClass("future");
-}
-
-if (currentHour > hourBlocks[4]) {
-  hour13.addClass("past");
-} else if (currentHour === hourBlocks[4]) {
-  hour13.addClass("present");
-} else {
-  hour13.addClass("future");
-}
-
-if (currentHour > hourBlocks[5]) {
-  hour14.addClass("past");
-} else if (currentHour === hourBlocks[5]) {
-  hour14.addClass("present");
-} else {
-  hour14.addClass("future");
-}
-
-if (currentHour > hourBlocks[6]) {
-  hour15.addClass("past");
-} else if (currentHour === hourBlocks[6]) {
-  hour15.addClass("present");
-} else {
-  hour15.addClass("future");
-}
-
-if (currentHour > hourBlocks[7]) {
-  hour16.addClass("past");
-} else if (currentHour === hourBlocks[7]) {
-  hour16.addClass("present");
-} else {
-  hour16.addClass("future");
-}
-
-if (currentHour > hourBlocks[8]) {
-  hour17.addClass("past");
-} else if (currentHour === hourBlocks[8]) {
-  hour17.addClass("present");
-} else {
-  hour17.addClass("future");
-}
-
-let hourlyTodo = todoText.value;
-
-function displayMessage() {
-  if (hourlyTodo === "") {
-  messageText.text("Nothing to save.");
-  messageText.setAttribute
+for (i = 0; i < hourBlocks.length; i++) {
+  if (currentHour === hourBlocks[i]) {
+    $(`#hour-${hourBlocks[i]}`).addClass("present");
+  } else if (currentHour > hourBlocks) {
+    $(`#hour-${hourBlocks[i]}`).addClass("past");
   } else {
-  messageText.text("Todo item has been saved to local storage.");
+    $(`#hour-${hourBlocks[i]}`).addClass("future");
   }
 }
 
-saveButton.on(click);
-if (hourlyTodo === "") {
-  displayMessage("error", "Nothing to save.");
-} else {
-  displayMessage("success", "Todo item has been saved to local storage.");
+for (i = 0; i < saveButton.length; i++) {
+  saveButton[i].addEventListener("click", function (event) {
+  event.preventDefault();
+  let hourlyToDo = event.target.previousElementSibling;
 
-localStorage.setItem("hourlyTodo", hourlyTodo);
+  let todoObj = {
+    time: hourlyToDo.getAttribute("id"),
+    value: hourlyToDo.value
+  }
+
+  objArray.push(todoObj);
+
+  localStorage.setItem("todoText", JSON.stringify(objArray));
+
+  function displayMessage () {
+    if (hourlyToDo.value === "") {
+      errorMessageText.append("You need to add a To Do Item before saving!")
+      successMessageText.attr("display", "none")
+    } else {
+      successMessageText.append("Your To Do item has been successfully added to local storage!")
+      errorMessageText.attr("display", "none")
+    }
+  }
+
+  displayMessage();
+});
 }
 
-$(function () {
-let hourlyTodo = localStorage.getItem("hourlyTodo");
-});
+function renderHourlyItems () {
+  let hourlyTodoValue = JSON.parse(localStorage.getItem("todoText"));
+  for (let i = 0; i < hourlyTodoValue.length; i++) {
+    let todoTime = hourlyTodoValue[i].time;
+    document.getElementById(todoTime).value = hourlyTodoValue[i].value;
+  }
+}
 
-// var storedTodos = JSON.parse(localStorage.getItem("todos"));
-//   // TODO: Describe the functionality of the following `if` statement.
-//   if (storedTodos !== null) {
-//     todos = storedTodos;
-//   }
-
-//   function storeTodos() {
-//     // TODO: Describe the purpose of the following line of code.
-//     localStorage.setItem("todos", JSON.stringify(todos));
-//   }
-
-//   saveButton.click(storeTodos());
+renderHourlyItems();
 
 $(function () {
   // TODO: Add a listener for click events on the save button. This code should

@@ -92,3 +92,15 @@ textarea {
   margin: 0%;
   padding: 0%;
 }
+
+#success {
+  display: flex;
+  justify-content: center;
+  margin-top: 70px;
+}
+
+#error {
+  display: flex;
+  justify-content: center;
+  margin-top: 70px;
+}
