@@ -7,9 +7,8 @@ let todoText = $("<textarea>");
 let saveButton = $(".saveBtn")
 let successMessageText = $("#success");
 let errorMessageText = $("#error");
-let currentHour = moment().format("H");
-let hourBlocks = ["9", "10", "11", "12", "13", "14", "15", "16", "17"];
-let objArray = [];
+let currentHour = moment().format("HH");
+let hourBlocks = ["09", "10", "11", "12", "13", "14", "15", "16", "17"];
 
 $(function () {
   // TODO: Add a listener for click events on the save button. This code should
@@ -18,31 +17,35 @@ $(function () {
   // function? How can DOM traversal be used to get the "hour-x" id of the
   // time-block containing the button that was clicked? How might the id be
   // useful when saving the description in local storage?
+
   for (i = 0; i < saveButton.length; i++) {
     saveButton[i].addEventListener("click", function (event) {
     event.preventDefault();
     let hourlyToDo = event.target.previousElementSibling;
+
+    if (hourlyToDo.value.trim() === "") {
+      errorMessageText.text("");
+      errorMessageText.append("You need to add a To Do Item before saving!")
+      successMessageText.text("");
+    } else {
+      let localStorageData = JSON.parse(localStorage.getItem("todoText"));
   
-    let todoObj = {
+      let todoObj = {
       time: hourlyToDo.getAttribute("id"),
       value: hourlyToDo.value
     }
-  
-    objArray.push(todoObj);
-  
-    localStorage.setItem("todoText", JSON.stringify(objArray));
-  
-    function displayMessage () {
-      if (hourlyToDo.value === "") {
-        errorMessageText.append("You need to add a To Do Item before saving!")
-        successMessageText.attr("display", "none")
-      } else {
-        successMessageText.append("Your To Do item has been successfully added to local storage!")
-        errorMessageText.attr("display", "none")
-      }
+      if (localStorageData === null) {
+      localStorageData = [];
+      localStorageData.push(todoObj);
+    } else {
+      localStorageData.push(todoObj);
     }
   
-    displayMessage();
+    localStorage.setItem("todoText", JSON.stringify(localStorageData));
+      successMessageText.text("");
+      successMessageText.append("Your To Do item has been successfully added to local storage!")
+      errorMessageText.text("");
+    }
   });
   }
   //
@@ -65,14 +68,16 @@ $(function () {
   // the values of the corresponding textarea elements. HINT: How can the id
   // attribute of each time-block be used to do this?
   function renderHourlyItems () {
-    let hourlyTodoValue = JSON.parse(localStorage.getItem("todoText"));
-    for (let i = 0; i < hourlyTodoValue.length; i++) {
+    let localStorageData = localStorage.getItem("todoText")
+    if (localStorageData != null) {
+      let hourlyTodoValue = JSON.parse(localStorageData);
+      for (let i = 0; i < hourlyTodoValue.length; i++) {
       let todoTime = hourlyTodoValue[i].time;
       document.getElementById(todoTime).value = hourlyTodoValue[i].value;
     }
   }
-  
-  renderHourlyItems();
+    }
+    renderHourlyItems();
   //
   // TODO: Add code to display the current date in the header of the page.
   dateEl.text(dateText);
